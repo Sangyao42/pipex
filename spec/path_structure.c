@@ -108,7 +108,7 @@ int	child_process1(int fd[2], t_info info, char **argv, char **envp)
 		if (access(final_path, F_OK & X_OK) == 0)
 		{
 			execve(final_path, cmd, envp);
-			perror("execve1 error");
+			perror("pipex");
 			return (2);
 		}
 		free(final_path);
@@ -150,7 +150,7 @@ int	child_process2(int fd[2], t_info info, char **argv, char **envp)
 	return (127);
 }
 
-int	*child_process(int fd[2], t_info info, char **argv, int i, char **envp)
+int	child_process(int fd[2], t_info info, char **argv, int i, char **envp)
 {
 	// int	err_code;
 
@@ -197,7 +197,7 @@ int	pipex(t_info info, char **argv, char **envp)
 			child_process(fd, info, argv, i, envp);
 		i++;
 	}
-	return (parent_process(fd, info, pid[0], pid[1]));
+	parent_process(fd, info, pid[0], pid[1]);
 }
 
 int	main(int argc, char *argv[], char **envp)// init t_cmds
