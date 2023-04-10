@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 12:50:21 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/10 19:18:46 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/10 20:11:39 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,10 +106,10 @@ char	*get_cmd_path(char **paths, const char *cmd_arg0)
 	{
 		temp_path = ft_strjoin(paths[i], "/");
 		cmd_path = ft_strjoin(temp_path, cmd_arg0);
-		free(temp_path);
+		one_string_free(temp_path);
 		if (access(cmd_path, F_OK & X_OK) == 0)
 			return (cmd_path);
-		free(cmd_path);
+		one_string_free(cmd_path);
 	}
 	return (NULL);
 }
