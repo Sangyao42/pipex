@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 12:50:21 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/10 19:16:30 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/10 19:18:46 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,5 +279,6 @@ int	main(int argc, char *argv[], char **envp)
 	exit_code = pipex(info, argv, envp);
 	strings_free(info.paths); //in ft_split.c, check first whether paths is NULL
 	// system("leaks pipex");
+	// memory leaks tests needed
 	return (exit_code);
 }
