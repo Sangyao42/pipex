@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_test.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 12:50:21 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/10 20:11:39 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/11 13:47:41 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,6 @@ typedef struct s_info
 	// int		outfile;
 }				t_info;
 
-void	paths_init(t_info *info)
-{
-	info->paths = NULL;
-	// info->infile = 0;
-	// info->outfile = 0;
-}
 
 void	one_string_free(char *string)
 {
@@ -57,38 +51,45 @@ void	strings_free(char **strings)
 	strings = NULL;
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
-	int		ret_val;
+// int	ft_strncmp(const char *s1, const char *s2, size_t n)
+// {
+// 	size_t	i;
+// 	int		ret_val;
 
-	i = 0;
-	ret_val = 0;
-	while ((s1[i] || s2[i]) && i < n)
-	{
-		ret_val = (unsigned char)s1[i] - (unsigned char)s2[i];
-		if (ret_val != 0)
-			return (ret_val);
-		else
-			ret_val = 0;
-		i++;
-	}
-	return (ret_val);
+// 	i = 0;
+// 	ret_val = 0;
+// 	while ((s1[i] || s2[i]) && i < n)
+// 	{
+// 		ret_val = (unsigned char)s1[i] - (unsigned char)s2[i];
+// 		if (ret_val != 0)
+// 			return (ret_val);
+// 		else
+// 			ret_val = 0;
+// 		i++;
+// 	}
+// 	return (ret_val);
+// }
+
+void	paths_init(t_info *info)
+{
+	info->paths = NULL;
+	// info->infile = 0;
+	// info->outfile = 0;
 }
 
-char	**get_paths(char **environ)
+char	**get_paths(char **environp)
 {
 	int		i;
 	char	**paths;
 
 	i = 0;
-	while (environ[i])
+	while (environp[i])
 	{
-		if (ft_strncmp(environ[i], "PATH=", 5) == 0)
+		if (ft_strncmp(environp[i], "PATH=", 5) == 0)
 			break ;
 		i++;
 	}
-	paths = ft_split(*(environ + i) + 5, ':');
+	paths = ft_split(*(environp + i) + 5, ':');
 	return (paths);
 }
 
@@ -100,7 +101,13 @@ char	*get_cmd_path(char **paths, const char *cmd_arg0)
 
 	if (ft_strnstr(cmd_arg0, "/", ft_strlen(cmd_arg0)) || \
 		ft_strnstr(cmd_arg0, "$(which", ft_strlen(cmd_arg0)))
-		return ((char *)cmd_arg0);
+	{
+		if (access(cmd_arg0, F_OK & X_OK) == 0)
+		{
+			cmd_path = ft_strdup(cmd_arg0);
+			return (cmd_path);
+		}
+	}
 	i = -1;
 	while (paths[++i])
 	{
@@ -120,7 +127,7 @@ char	*get_cmd_path(char **paths, const char *cmd_arg0)
 // 	{
 // 		perror("open");
 // 		strings_free(paths);
-// 		exit (1);
+// 		exit (errno);
 // 	}
 // 	else if (ft_strncmp(msg, "execve", 6) == 0)
 // 	{
@@ -132,9 +139,9 @@ char	*get_cmd_path(char **paths, const char *cmd_arg0)
 // 	}
 // 	else if (ft_strncmp(msg, "command not found", 17) == 0)
 // 	{
-// 		ft_putstr_fd("command not found: ", STDERR_FILENO);
-// 		ft_putstr_fd(cmd_args[0], STDERR_FILENO);
-// 		ft_putstr_fd("\n", STDERR_FILENO);
+// 		if (cmd_args)
+// 			ft_putstr_fd(cmd_args[0], STDERR_FILENO);
+// 		ft_putstr_fd(": command not found\n", STDERR_FILENO);
 // 		strings_free(paths);
 // 		strings_free(cmd_args);
 // 		exit (127);
@@ -151,9 +158,13 @@ void	error_and_exit(char *msg, char **paths, char **cmd_args, char *cmd_path)
 	// 	perror("execve");
 	if (ft_strncmp(msg, "command not found", 17) == 0)
 	{
-		ft_putstr_fd("command not found: ", STDERR_FILENO);
-		ft_putstr_fd(cmd_args[0], STDERR_FILENO);
-		ft_putstr_fd("\n", STDERR_FILENO);
+		if (cmd_args)
+			ft_putstr_fd(cmd_args[0], STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		strings_free(paths);
+		strings_free(cmd_args);
+		one_string_free(cmd_path);
+		exit (127);
 	}
 	else
 		perror(msg);
@@ -180,13 +191,14 @@ void	child_process1(int fd[2], t_info info, char **argv, char **envp)
 	close(fd[1]);
 	close(fd_infile);
 	cmd_args = ft_split(argv[2], ' ');
+	if (cmd_args == NULL || cmd_args[0] == NULL)
+		error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 	cmd_path = get_cmd_path(info.paths, cmd_args[0]);
 	if (cmd_path)
 	{
 		execve(cmd_path, cmd_args, envp);
 		error_and_exit("execve", info.paths, cmd_args, cmd_path);
 	}
-	errno = 127;
 	error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 }
 
@@ -207,6 +219,8 @@ void	child_process2(int fd[2], t_info info, char **argv, char **envp)
 	close(fd[0]);
 	close(fd_outfile);
 	cmd_args = ft_split(argv[3], ' ');
+	if (cmd_args == NULL || cmd_args[0] == NULL)
+		error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 	cmd_path = get_cmd_path(info.paths, cmd_args[0]);
 	if (cmd_path)
 	{
@@ -214,7 +228,6 @@ void	child_process2(int fd[2], t_info info, char **argv, char **envp)
 		//free cmd args and cmd path and info.paths
 		error_and_exit("execve", info.paths, cmd_args, cmd_path);
 	}
-	errno = 127;
 	error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 }
 
@@ -232,6 +245,7 @@ int	parent_process(int fd[2], pid_t pid1, pid_t pid2)
 	else
 	{
 		// error_and_exit("unexpected exit from outside process");
+		printf("error code:%d\t%d", WIFEXITED(wstats2), WEXITSTATUS(wstats2));
 		perror("unexpected exit from outside process");
 		return (1);
 	}
