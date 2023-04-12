@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:32:18 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/12 14:59:24 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/12 16:56:32 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,32 @@ void	strings_free(char **strings)
 	}
 	free(strings);
 	strings = NULL;
+}
+
+void	error_and_exit(char *msg, char **paths, char **cmd_args, char *cmd_path)
+{
+	if (ft_strncmp(msg, "command not found", 17) == 0)
+	{
+		ft_putstr_fd("pipex: ", STDERR_FILENO);
+		if (cmd_args)
+			ft_putstr_fd(cmd_args[0], STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+		strings_free(paths);
+		strings_free(cmd_args);
+		one_string_free(cmd_path);
+		exit (127);
+	}
+	else if (msg)
+	{
+		ft_putstr_fd("pipex: ", STDERR_FILENO);
+		perror(msg);
+	}
+	else
+		perror("pipex");
+	strings_free(paths);
+	strings_free(cmd_args);
+	one_string_free(cmd_path);
+	exit (1);
 }
 
 // void	error_and_exit(char *msg, char **paths, char **cmd_args, char *cmd_path)
@@ -89,27 +115,3 @@ void	strings_free(char **strings)
 // 	one_string_free(cmd_path);
 // 	exit (errno);
 // }
-
-void	error_and_exit(char *msg, char **paths, char **cmd_args, char *cmd_path)
-{
-	if (ft_strncmp(msg, "command not found", 17) == 0)
-	{
-		ft_putstr_fd("pipex: ", STDERR_FILENO);
-		if (cmd_args)
-			ft_putstr_fd(cmd_args[0], STDERR_FILENO);
-		ft_putstr_fd(": command not found\n", STDERR_FILENO);
-		strings_free(paths);
-		strings_free(cmd_args);
-		one_string_free(cmd_path);
-		exit (127);
-	}
-	else
-	{
-		ft_putstr_fd("pipex: ", STDERR_FILENO);
-		perror(msg);
-	}
-	strings_free(paths);
-	strings_free(cmd_args);
-	one_string_free(cmd_path);
-	exit (1);
-}
