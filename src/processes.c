@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:29:04 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/12 13:12:37 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/12 22:29:33 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	child_process1(int fd[2], t_info info, char **argv, char **envp)
 
 	cmd_args = NULL;
 	cmd_path = NULL;
-	fd_infile = open(argv[1], O_RDONLY, 0644);
+	fd_infile = open(argv[1], O_RDONLY);
 	if (fd_infile == -1)
 		error_and_exit(argv[1], info.paths, cmd_args, cmd_path);
 	close(fd[0]);
