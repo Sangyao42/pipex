@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 12:47:41 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/11 15:22:46 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/12 15:41:14 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,3 @@ void	error_and_exit(char *msg, \
 	char **paths, char **cmd_args, char *cmd_path);
 
 #endif
-

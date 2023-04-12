@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:29:04 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/11 18:48:29 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/12 13:12:37 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	child_process1(int fd[2], t_info info, char **argv, char **envp)
 	cmd_path = NULL;
 	fd_infile = open(argv[1], O_RDONLY, 0644);
 	if (fd_infile == -1)
-		error_and_exit(argv[1], info.paths, cmd_args, cmd_path);// error_and_exit("open"); free info.paths
+		error_and_exit(argv[1], info.paths, cmd_args, cmd_path);
 	close(fd[0]);
 	dup2(fd_infile, STDIN_FILENO);
 	dup2(fd[1], STDOUT_FILENO);
@@ -37,7 +37,6 @@ void	child_process1(int fd[2], t_info info, char **argv, char **envp)
 		execve(cmd_path, cmd_args, envp);
 		error_and_exit("execve", info.paths, cmd_args, cmd_path);
 	}
-	// errno = 127;
 	error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 }
 
@@ -58,7 +57,6 @@ void	child_process2(int fd[2], t_info info, char **argv, char **envp)
 	close(fd[0]);
 	close(fd_outfile);
 	cmd_args = ft_split(argv[3], ' ');
-	// ft_putstr_fd(cmd_args[0], STDERR_FILENO);
 	if (cmd_args == NULL || cmd_args[0] == NULL)
 		error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 	cmd_path = get_cmd_path(info.paths, cmd_args[0]);
@@ -67,7 +65,6 @@ void	child_process2(int fd[2], t_info info, char **argv, char **envp)
 		execve(cmd_path, cmd_args, envp);
 		error_and_exit("execve", info.paths, cmd_args, cmd_path);
 	}
-	// errno = 127;
 	error_and_exit("command not found", info.paths, cmd_args, cmd_path);
 }
 
@@ -84,9 +81,7 @@ int	parent_process(int fd[2], pid_t pid1, pid_t pid2)
 		return (WEXITSTATUS(wstats2));
 	else
 	{
-		// error_and_exit("unexpected exit from outside process");
-		printf("error code:%d\t%d", WIFEXITED(wstats2), WEXITSTATUS(wstats2));
-		perror("unexpected exit from outside process");
+		perror(NULL);
 		return (1);
 	}
 }

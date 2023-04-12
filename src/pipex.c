@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:28:09 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/11 18:48:17 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/12 15:40:55 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,15 @@ int	pipex(t_info info, char **argv, char **envp)
 	pid_t	pid[2];
 
 	if (pipe(fd) == -1)
-		return (perror("pipe"), 1);// error_and_exit("pipe");
+		return (perror("pipe"), 1);
 	pid[0] = fork();
 	if (pid[0] == -1)
-		return (perror("first fork"), 1);// error_and_exit("fork");
+		return (perror("first fork"), 1);
 	if (pid[0] == 0)
 		child_process1(fd, info, argv, envp);
 	pid[1] = fork();
 	if (pid[1] == -1)
-		return (perror("second fork"), 1);// error_and_exit("fork");
+		return (perror("second fork"), 1);
 	if (pid[1] == 0)
 		child_process2(fd, info, argv, envp);
 	return (parent_process(fd, pid[0], pid[1]));
@@ -42,23 +42,11 @@ int	main(int argc, char *argv[], char **envp)
 		ft_putstr_fd("usage: ./pipex infile cmd1 cmd2 outfile", STDERR_FILENO);
 		exit(1);
 	}
-	// if (envp == NULL)
-	// {
-	// 	// ft_putstr_fd("envp is NULL", STDERR_FILENO);
-	// 	exit(1);
-	// }
 	paths_init(&info);
 	info.paths = get_paths(envp);
 	if (info.paths == NULL)
-	{
-		//error_and_exit
-		// perror("ft_split error");
-		// exit(1);
 		return (perror("ft_split error"), 1);
-	}
 	exit_code = pipex(info, argv, envp);
-	strings_free(info.paths); //in ft_split.c, check first whether paths is NULL
-	// system("leaks pipex");
-	// memory leaks tests needed
+	strings_free(info.paths);
 	return (exit_code);
 }

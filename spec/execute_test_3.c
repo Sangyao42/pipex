@@ -33,12 +33,12 @@ int	main(int argc, char **argv)
 		perror("pipe");
 		return (1);
 	}
-	int	fd3[2];
-	if (pipe(fd3) == -1)
-	{
-		perror("pipe");
-		return (1);
-	}
+	// int	fd3[2];
+	// if (pipe(fd3) == -1)
+	// {
+	// 	perror("pipe");
+	// 	return (1);
+	// }
 	int pid1 = fork();
 	if (pid1 == -1)
 	{
@@ -115,7 +115,6 @@ int	main(int argc, char **argv)
 			return (2);
 		}
 	}
-
 	close(fd[1]);
 	close(fd[0]);
 	close(fd2[0]);
@@ -152,4 +151,3 @@ int	main(int argc, char **argv)
 
 	return (0);
 }
-
