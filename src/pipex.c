@@ -6,11 +6,12 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:28:09 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/12 15:40:55 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/14 18:05:09 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <stdio.h>
 
 int	pipex(t_info info, char **argv, char **envp)
 {
@@ -39,13 +40,11 @@ int	main(int argc, char *argv[], char **envp)
 
 	if (argc != 5)
 	{
-		ft_putstr_fd("usage: ./pipex infile cmd1 cmd2 outfile", STDERR_FILENO);
+		ft_putstr_fd("usage: ./pipex infile cmd1 cmd2 outfile\n", STDERR_FILENO);
 		exit(1);
 	}
 	paths_init(&info);
 	info.paths = get_paths(envp);
-	if (info.paths == NULL)
-		return (perror("ft_split error"), 1);
 	exit_code = pipex(info, argv, envp);
 	strings_free(info.paths);
 	return (exit_code);
