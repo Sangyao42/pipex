@@ -6,7 +6,7 @@
 /*   By: sawang <sawang@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 13:29:04 by sawang            #+#    #+#             */
-/*   Updated: 2023/04/12 22:29:33 by sawang           ###   ########.fr       */
+/*   Updated: 2023/04/14 18:03:03 by sawang           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	parent_process(int fd[2], pid_t pid1, pid_t pid2)
 		return (WEXITSTATUS(wstats2));
 	else
 	{
-		perror(NULL);
+		perror("pipex");
 		return (1);
 	}
 }
